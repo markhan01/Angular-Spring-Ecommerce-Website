@@ -1,7 +1,7 @@
 <div class="text-center mt-5">
     <div class="card mx-auto" style="width: 25%">
       <div class="card-header mt-4">
-        Login
+        Register
       </div>
       <img
         id="profile-img"
@@ -9,25 +9,29 @@
         class="img-thumbnail m-3"
       />
       <form
-        *ngIf="!isLoggedIn"
+        *ngIf="!isSuccessful"
         name="form"
         (ngSubmit)="f.form.valid && onSubmit()"
         #f="ngForm"
         novalidate
       >
-       <div class="form-group text-center m-3">
+        <div class="form-group text-center m-3">
           <label for="username">Email</label>
           <input
-            type="text"
+            type="email"
             class="form-control"
-            name="username"
+            name="email"
             [(ngModel)]="form.username"
             required
-            #username="ngModel"
-            [ngClass]="{ 'is-invalid': f.submitted && username.errors }"
+            email
+            #email="ngModel"
+            [ngClass]="{ 'is-invalid': f.submitted && email.errors }"
           />
-          <div *ngIf="username.errors && f.submitted" class="invalid-feedback">
-            Email is required!
+          <div class="invalid-feedback" *ngIf="email.errors && f.submitted">
+            <div *ngIf="email.errors['required']">Email is required</div>
+            <div *ngIf="email.errors['email']">
+              Email must be a valid email address
+            </div>
           </div>
         </div>
         <div class="form-group text-center m-3">
@@ -42,7 +46,7 @@
             #password="ngModel"
             [ngClass]="{ 'is-invalid': f.submitted && password.errors }"
           />
-          <div *ngIf="password.errors && f.submitted" class="invalid-feedback">
+          <div class="invalid-feedback" *ngIf="password.errors && f.submitted">
             <div *ngIf="password.errors['required']">Password is required</div>
             <div *ngIf="password.errors['minlength']">
               Password must be at least 6 characters
@@ -50,21 +54,16 @@
           </div>
         </div>
         <div class="form-group text-center mt-5 mb-5">
-            <button class="btn btn-primary col-11">Login</button>
+          <button class="btn btn-primary col-11">Sign Up</button>
         </div>
-        <div class="form-group">
-          <div *ngIf="f.submitted && isLoginFailed" class="alert alert-danger" role="alert">
-            Login failed! <br> {{ errorMessage }}
-          </div>
+  
+        <div class="alert alert-warning" *ngIf="f.submitted && isSignUpFailed">
+          Signup failed!<br />{{ errorMessage }}
         </div>
       </form>
   
-      <div class="alert alert-success m-3" *ngIf="isLoggedIn">
-        Login Sucessful!
-        <br>
-        Roles: {{ roles }}
-        <br>
-        <button routerLink="/" class="btn btn-success m-3">Return to Home</button>
+      <div class="alert alert-success m-3" *ngIf="isSuccessful">
+        Your registration is successful!
       </div>
     </div>
   </div>

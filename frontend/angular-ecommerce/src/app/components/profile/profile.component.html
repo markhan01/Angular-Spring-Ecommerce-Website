@@ -1,0 +1,24 @@
+<div class="container" *ngIf="isLoggedIn">
+    <br><br><br><br><br><br>
+    <header class="jumbotron">
+      <h3>
+        Profile
+      </h3>
+    </header>
+    <p>
+      <strong>Email:</strong>
+      {{ currentUser.username }}
+    </p>
+    <strong>Roles:</strong>
+    <ul>
+      <li *ngFor="let role of currentUser.roles">
+        {{ role }}
+      </li>
+    </ul>
+</div>
+
+  
+<div *ngIf="!isLoggedIn">
+    <br><br><br>
+    <button *ngIf="!isLoggedIn" routerLink="/login" class="btn btn-primary col-12 mt-5">Click here to Login</button>
+</div>

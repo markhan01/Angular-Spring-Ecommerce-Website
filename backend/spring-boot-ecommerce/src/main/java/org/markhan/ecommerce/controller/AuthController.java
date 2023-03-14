@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins ="*", maxAge = 3600)
+@CrossOrigin(origins ="http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -55,8 +55,13 @@ public class AuthController {
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 		
-		Authentication authentication = authenticationManager
+		Authentication authentication;
+		try {
+			authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(new MessageResponse("Error: Invalid Credentials"));
+		}
 		
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		

@@ -32,8 +32,8 @@ public class User {
 	private Integer id;
 	
 	@NotBlank
-	@Size(max = 20)
-	private String username;
+	@Size(max = 40)
+	private String username; 
 	
 	@NotBlank
 	@Size(max = 90)

@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 	    // securedEnabled = true,
 	    // jsr250Enabled = true,
 	    prePostEnabled = true)
-public class SecurityConfiguration {
+public class SecurityConfig {
 	
 	@Autowired
 	UserDetailsServiceImpl userDetailsService;
@@ -63,7 +63,7 @@ public class SecurityConfiguration {
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests()
-			.antMatchers("/api/auth/**").permitAll()
+			.antMatchers("/**").permitAll()
 			.antMatchers("/api/test/**").permitAll()
 			.anyRequest().authenticated();
 		

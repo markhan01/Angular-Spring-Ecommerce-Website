@@ -14,41 +14,31 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CartStatusComponent } from './components/cart-status/cart-status.component';
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { LoginComponent } from './components/login/login.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoginStatusComponent } from './components/login-status/login-status.component';
+import { RegisterComponent } from './components/register/register.component';
 
-import { 
-  OktaAuthGuard,
-  OktaAuthModule,
-  OktaCallbackComponent,
-  OKTA_CONFIG
-} from '@okta/okta-angular';
-import { OktaAuth } from '@okta/okta-auth-js';
+
 
 import myAppConfig from './config/my-app-config';
 import { MembersPageComponent } from './components/members-page/members-page.component';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
-import { AuthInterceptorService } from './services/auth-interceptor.service';
+import { httpInterceptorProviders } from './helpers/http.interceptor';
+import { LoginComponent } from './components/login/login.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
-const oktaConfig = myAppConfig.oidc;
 
-const oktaAuth = new OktaAuth(oktaConfig);
-
-function sendToLoginPage(oktaAuth: OktaAuth, injector: Injector) {
-  // Use injector to access any service available within your application
-  const router = injector.get(Router);
-
-  // Redirect user to custom login page
-  router.navigate(['/login']);
-}
 
 const routes: Routes = [
-  {path: 'order-history', component: OrderHistoryComponent, canActivate: [OktaAuthGuard],
-                    data: {onAuthRequired: sendToLoginPage} },
-  {path: 'members', component: MembersPageComponent, canActivate: [OktaAuthGuard],
-                    data: {onAuthRequired: sendToLoginPage} },
-  {path: 'login/callback', component: OktaCallbackComponent},
+  {path: 'register', component: RegisterComponent},
+  {path: 'order-history', component: OrderHistoryComponent},
+  //                   data: {onAuthRequired: sendToLoginPage} },
+  // {path: 'order-history', component: OrderHistoryComponent, canActivate: [OktaAuthGuard],
+  //                   data: {onAuthRequired: sendToLoginPage} },
+  // {path: 'members', component: MembersPageComponent, canActivate: [OktaAuthGuard],
+  //                   data: {onAuthRequired: sendToLoginPage} },
+  // {path: 'login/callback', component: OktaCallbackComponent},
+  {path: 'profile', component: ProfileComponent},
   {path: 'login', component: LoginComponent},
   {path: 'checkout', component: CheckoutComponent},
   {path: 'cart-details', component: CartDetailsComponent},
@@ -71,10 +61,12 @@ const routes: Routes = [
     CartStatusComponent,
     CartDetailsComponent,
     CheckoutComponent,
-    LoginComponent,
-    LoginStatusComponent,
     MembersPageComponent,
-    OrderHistoryComponent
+    OrderHistoryComponent,
+    RegisterComponent,
+    LoginStatusComponent,
+    LoginComponent,
+    ProfileComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -82,11 +74,12 @@ const routes: Routes = [
     HttpClientModule,
     NgbModule,
     ReactiveFormsModule,
-    OktaAuthModule
+    FormsModule
   ],
-  providers: [ProductService, { provide: OKTA_CONFIG, useValue: { oktaAuth }},
-                              // Registers our AuthInterceptorService as an HTTP interceptor that is a token for injection for an array of values
-                              { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}],
+  providers: [
+    ProductService, 
+    httpInterceptorProviders
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { OktaAuthStateService, OKTA_AUTH } from '@okta/okta-angular';
-import { OktaAuth } from '@okta/okta-auth-js';
+import { AuthService } from 'src/app/services/auth.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-login-status',
@@ -9,49 +9,39 @@ import { OktaAuth } from '@okta/okta-auth-js';
 })
 export class LoginStatusComponent implements OnInit {
 
-  isAuthenticated: boolean = false;
-  userFullName: string = '';
+  isLoggedIn: boolean = false;
+  username: string = '';
 
   storage: Storage = sessionStorage;
 
-  constructor(private oktaAuthService: OktaAuthStateService,
-              @Inject(OKTA_AUTH) private oktaAuth: OktaAuth) { }
+  constructor(private authService: AuthService,
+              private storageService: StorageService) { }
 
   ngOnInit(): void {
-
-    // Subscribe to authentication state for state changes
-    this.oktaAuthService.authState$.subscribe(
-      (result) => {
-        this.isAuthenticated = result.isAuthenticated!;
-        this.getUserDetails();
-      }
-    )
+    if (this.storageService.isLoggedIn()) {
+      this.isLoggedIn = true;
+      this.username = this.storageService.getUser().username;
+    }
+    
   }
 
   getUserDetails() {
-    if (this.isAuthenticated) {
-
-      // Fetch the logged in user's details (as UserClaims)
-      //
-      // user full name is exposed as a property name
-      this.oktaAuth.getUser().then(
-        (res) => {
-          this.userFullName = res.name as string;
-
-          // retrieve the user's email from the authentication response
-          const theEmail = res.email;
-
-          // store the email in the browser storage
-          this.storage.setItem('userEmail', JSON.stringify(theEmail));
-        }
-      )
-    }
+    
   }
 
   logout() {
+    this.authService.logout().subscribe({
+      next: res => {
+        console.log(res);
+        this.storageService.clean();
 
-    // Terminate the session with Okta and removes current tokens
-    this.oktaAuth.signOut();
+        window.location.reload();
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
+    this.isLoggedIn = false;
   }
 
 }

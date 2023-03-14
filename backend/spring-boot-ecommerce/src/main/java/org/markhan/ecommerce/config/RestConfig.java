@@ -21,7 +21,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 @Configuration
-public class MyDataRestConfig implements RepositoryRestConfigurer {
+public class RestConfig implements RepositoryRestConfigurer {
 
 	// inject allowed.origins from application.properties
 	@Value("${allowed.origins}")
@@ -30,7 +30,7 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 	private EntityManager entityManager;
 	
 	@Autowired
-	public MyDataRestConfig(EntityManager theEntityManager) {
+	public RestConfig(EntityManager theEntityManager) {
 		entityManager = theEntityManager;
 	}
 	
@@ -51,7 +51,7 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 		exposeIds(config);
 		
 		// configure cors mapping
-		cors.addMapping(config.getBasePath() + "/**").allowedOrigins(theAllowedOrigins);
+		cors.addMapping(config.getBasePath() + "/**").allowedOrigins(theAllowedOrigins).allowCredentials(true).maxAge(3600);
 	}
 
 	// method to make entities read-only

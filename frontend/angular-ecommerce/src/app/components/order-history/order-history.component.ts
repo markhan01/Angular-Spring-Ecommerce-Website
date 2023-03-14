@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OrderHistory } from 'src/app/common/order-history';
 import { OrderHistoryService } from 'src/app/services/order-history.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-order-history',
@@ -10,9 +11,9 @@ import { OrderHistoryService } from 'src/app/services/order-history.service';
 export class OrderHistoryComponent implements OnInit {
 
   orderHistoryList: OrderHistory[] = [];
-  storage: Storage = sessionStorage;
 
-  constructor(private orderHistoryService: OrderHistoryService) { }
+  constructor(private orderHistoryService: OrderHistoryService,
+              private storageService: StorageService) { }
 
   ngOnInit(): void {
     this.handleOrderHistory();
@@ -21,7 +22,7 @@ export class OrderHistoryComponent implements OnInit {
   handleOrderHistory() {
 
     // read the user's email address from the browser storage
-    const theEmail = JSON.parse(this.storage.getItem('userEmail'));
+    const theEmail = this.storageService.getUser().username;
 
     // retrieve data from the service
     this.orderHistoryService.getOrderHistory(theEmail).subscribe(
