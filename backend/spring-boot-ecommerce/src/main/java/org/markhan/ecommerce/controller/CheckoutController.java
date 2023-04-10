@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 
-@CrossOrigin(origins ="http://localhost:4200", maxAge = 3600, allowCredentials="true")
+@CrossOrigin(origins ={"http://ecommerce-site-client.s3-website.us-east-2.amazonaws.com", "http://localhost:4200"}, maxAge = 3600, allowCredentials="true")
 @RestController
 @RequestMapping("/api/checkout")
 public class CheckoutController {
