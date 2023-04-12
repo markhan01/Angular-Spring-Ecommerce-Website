@@ -1,4 +1,4 @@
-name: GitHub Pages
+name: Angular AWS S3 Deploy
 
 on:
   push:
