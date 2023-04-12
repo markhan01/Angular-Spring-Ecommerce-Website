@@ -3,7 +3,7 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - test
+      - main
 
 env:
   AWS_REGION: us-east-2
@@ -52,4 +52,3 @@ jobs:
         aws_access_key: ${{ env.AWS_ACCESS_KEY_ID }}
         aws_secret_key: ${{ env.AWS_SECRET_ACCESS_KEY }}
         deployment_package: ./backend/spring-boot-ecommerce/target/spring-boot-ecommerce-0.0.1-SNAPSHOT.jar
-        
